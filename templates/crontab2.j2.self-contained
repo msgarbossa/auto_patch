@@ -1,0 +1,4 @@
+# Cron job entry managed by Ansible (not currently used, but just an example of idempotent hostname hash in jinja)
+{% set min = (inventory_hostname | hash('sha1') | int(0, 16)) % 60 %}
+{% set hr = (inventory_hostname | hash('sha1') | int(3, 16)) % 5 %}
+{{ min }} {{ hr }} * * * root /usr/bin/timeout 45m {{ script }} >/dev/null 2>&1

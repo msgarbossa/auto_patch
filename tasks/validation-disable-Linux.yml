@@ -1,0 +1,9 @@
+---
+
+- name: Ensure verify-reboot service is disabled on boot
+  systemd:
+    name: verify-reboot
+    enabled: no
+  when:
+    - ansible_virtualization_type|default(None) != 'docker'
+    - ansible_service_mgr == "systemd"

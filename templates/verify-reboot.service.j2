@@ -1,0 +1,11 @@
+[Unit]
+Description=Verify reboot status on system boot
+After=network.target
+
+[Service]
+Type=oneshot
+SyslogIdentifier=verify-reboot
+ExecStart={{ init_script }} start 2>&1 | systemd-cat -t verify-reboot -p info
+
+[Install]
+WantedBy=multi-user.target

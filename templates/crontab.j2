@@ -1,0 +1,2 @@
+# Cron job entry managed by Ansible
+{{ min }} {{ hr }} {{ day_of_month }} {{ month }} {{ day_of_week }} root /usr/bin/timeout 45m {{ script }} >/var/log/auto-patch/cron.out 2>&1

@@ -1,0 +1,9 @@
+---
+
+- name: Remove /etc/cron.d/auto-patch
+  file:
+    path: /etc/cron.d/auto-patch
+    state: absent
+
+- name: include tasks for reboot validation
+  include_tasks: validation-{{ state }}-{{ ansible_system }}.yml

@@ -1,0 +1,157 @@
+---
+
+# Ubuntu already prints a message on login when a reboot is required
+- name: copy auto-patch-notify.sh for RedHat
+  copy:
+    src: auto-patch-notify.sh
+    dest: /etc/profile.d/auto-patch-notify.sh
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_distribution == "RedHat"
+
+- name: Make sure script directory exists
+  file:
+    path: "{{ script_dir }}"
+    state: directory
+    owner: root
+    group: root
+    recurse: yes
+    mode: 0755
+
+- name: copy OS-specific auto-patch.sh script
+  copy:
+    src: auto-patch-{{ ansible_distribution }}.sh
+    dest: "{{ script_dir }}/auto-patch.sh"
+    owner: root
+    group: root
+    mode: 0700
+
+- name: pre_update.d directory
+  file:
+    path: "{{ script_dir }}/pre_update.d"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: post_update.d directory
+  file:
+    path: "{{ script_dir }}/post_update.d"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: post_reboot.d directory
+  file:
+    path: "{{ script_dir }}/post_reboot.d"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: copy pre_update.sh
+  copy:
+    src: pre_update.sh
+    dest: "{{ script_dir }}/pre_update.sh"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: copy post_update.sh
+  copy:
+    src: post_update.sh
+    dest: "{{ script_dir }}/post_update.sh"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: copy post_reboot.sh
+  copy:
+    src: post_reboot.sh
+    dest: "{{ script_dir }}/post_reboot.sh"
+    owner: root
+    group: root
+    mode: 0755
+
+# Only required for RHEL (Ubuntu has this functionality built-in)
+- name: copy reboot-required-detection-rhel.sh for RHEL
+  copy:
+    src: reboot-required-detection-rhel.sh
+    dest: "{{ script_dir }}/post_update.d/10-reboot-required-detection.sh"
+    owner: root
+    group: root
+    mode: 0755
+  when: ansible_distribution == "RedHat"
+
+# /etc/cron.d uses cronie on RHEL and cron packages on Ubuntu
+# determine OS-specific package name in vars/<OS>.yml included in tasks/main.yml
+- name: Install package ensuring /etc/cron.d is used
+  package:
+    name: "{{ cron_pkg }}"
+    state: present
+
+- name: Make sure /etc/cron.d directory exists
+  file:
+    path: /etc/cron.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+
+- name: create /etc/cron.d/auto-patch from template
+  template:
+    src: crontab.j2
+    dest: /etc/cron.d/auto-patch
+    owner: root
+    group: root
+    mode: 0644
+  vars:
+    min: "{{ cron_min_max| random(start=cron_min_min, seed=inventory_hostname) }}"
+    hr: "{{ cron_hr_max | random(start=cron_hr_min, seed=inventory_hostname) }}"
+    day_of_month: "{{ cron_day_of_month }}"
+    month: "{{ cron_month }}"
+    day_of_week: "{{ cron_day_of_week }}"
+    script: "{{ script_dir }}/auto-patch.sh"
+
+# auto-patch.sh writes log files to /var/log/auto-patch/auto-patch-update.<date>
+- name: /var/log/auto-patch directory
+  file:
+    path: /var/log/auto-patch
+    state: directory
+    owner: root
+    group: root
+    recurse: yes
+    mode: 0755
+
+- name: logrotate for /var/log/auto-patch/auto-patch-update.<date>
+  copy:
+    content: |
+      # logrotate file managed by Ansible (role=auto-patch/tasks/patch-enable-Linux)
+      /var/log/auto-patch/auto-patch-update.* {
+        daily
+        rotate 14
+      }
+    dest: /etc/logrotate.d/auto-patch
+    owner: root
+    group: root
+    mode: 0644
+
+- name: copy reboot script when auto_reboot is enable
+  copy:
+    src: reboot.sh
+    dest: "{{ script_dir }}/post_update.d/99-reboot.sh"
+    owner: root
+    group: root
+    mode: 0755
+  when: auto_reboot == 'enable'
+
+- name: remove reboot script when auto_reboot is enable
+  file:
+    path: "{{ script_dir }}/post_update.d/99-reboot.sh"
+    state: absent
+  when: auto_reboot == 'disable'
+
+- name: include tasks for reboot validation
+  include_tasks: validation-{{ state }}-{{ ansible_system }}.yml

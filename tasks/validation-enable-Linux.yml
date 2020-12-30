@@ -1,0 +1,74 @@
+---
+
+- name: copy cmds-save.py
+  copy:
+    src: cmds-save.py
+    dest: "{{ script_dir }}/pre_update.d/10-cmds-save.py"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: copy cmds-cleanup.sh
+  copy:
+    src: cmds-cleanup.sh
+    dest: "{{ script_dir }}/pre_update.d/10-cmds-cleanup.sh"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: copy common.py to pre_update.d
+  copy:
+    src: common.py
+    dest: "{{ script_dir }}/pre_update.d/common.py"
+    owner: root
+    group: root
+    mode: 0644  # Should not be executable
+
+- name: copy verify.py
+  copy:
+    src: verify.py
+    dest: "{{ script_dir }}/post_reboot.d/10-verify.py"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: copy common.py to post_reboot.d
+  copy:
+    src: common.py
+    dest: "{{ script_dir }}/post_reboot.d/common.py"
+    owner: root
+    group: root
+    mode: 0644  # Should not be executable
+
+- name: copy verify-reboot.sh
+  copy:
+    src: verify-reboot.sh
+    dest: "{{ script_dir }}/verify-reboot.sh"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: create /etc/systemd/system/verify-reboot.service from template
+  template:
+    src: verify-reboot.service.j2
+    dest: /etc/systemd/system/verify-reboot.service
+    owner: root
+    group: root
+    mode: 0644
+  vars:
+    init_script: "{{ script_dir }}/verify-reboot.sh"
+  notify: reload systemd for auto-patch
+  when:
+    - ansible_virtualization_type|default(None) != 'docker'
+    - ansible_service_mgr == "systemd"
+
+- name: Ensure handlers are notified now so service can be enabled
+  meta: flush_handlers
+
+- name: Ensure verify-reboot service is enabled on boot
+  systemd:
+    name: verify-reboot
+    enabled: yes
+  when:
+    - ansible_virtualization_type|default(None) != 'docker'
+    - ansible_service_mgr == "systemd"

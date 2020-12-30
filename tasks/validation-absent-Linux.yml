@@ -1,0 +1,43 @@
+---
+
+- name: Remove ./pre_update.d/10-cmds-save.py
+  file:
+    path: "{{ script_dir }}/pre_update.d/10-cmds-save.py"
+    state: absent
+
+- name: Remove ./pre_update.d/common.py
+  file:
+    path: "{{ script_dir }}/pre_update.d/common.py"
+    state: absent
+
+- name: Remove ./post_reboot.d/10-verify.py
+  file:
+    path: "{{ script_dir }}/post_reboot.d/10-verify.py"
+    state: absent
+
+- name: Remove ./post_reboot.d/common.py
+  file:
+    path: "{{ script_dir }}/post_reboot.d/common.py"
+    state: absent
+
+- name: Remove ./verify-reboot.sh
+  file:
+    path: "{{ script_dir }}/verify-reboot.sh"
+    state: absent
+
+- name: Ensure verify-reboot service is disabled on boot
+  systemd:
+    name: verify-reboot
+    enabled: no
+  when:
+    - ansible_virtualization_type|default(None) != 'docker'
+    - ansible_service_mgr == "systemd"
+
+- name: Remove /etc/systemd/system/verify-reboot.service
+  file:
+    path: /etc/systemd/system/verify-reboot.service
+    state: absent
+  notify: reload systemd for auto-patch
+  when:
+    - ansible_virtualization_type|default(None) != 'docker'
+    - ansible_service_mgr == "systemd"

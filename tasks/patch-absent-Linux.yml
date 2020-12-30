@@ -1,0 +1,38 @@
+---
+
+- name: Remove /etc/cron.d/auto-patch
+  file:
+    path: /etc/cron.d/auto-patch
+    state: absent
+
+- name: Remove script_dir (recursive)
+  file:
+    path: "{{ script_dir }}"
+    state: absent
+
+# - name: Ensure verify-reboot service is disabled on boot
+#   systemd:
+#     name: verify-reboot
+#     enabled: no
+#   when:
+#     - ansible_virtualization_type|default(None) != 'docker'
+#     - ansible_service_mgr == "systemd"
+
+- name: Remove /etc/systemd/system/verify-reboot.service
+  file:
+    path: /etc/systemd/system/verify-reboot.service
+    state: absent
+  notify: reload systemd for auto-patch
+  when:
+    - ansible_virtualization_type|default(None) != 'docker'
+    - ansible_service_mgr == "systemd"
+
+- name: Remove log directory (recursive)
+  file:
+    path: /var/log/auto-patch
+    state: absent
+
+- name: Remove /etc/logrotate.d/auto-patch
+  file:
+    path: /etc/logrotate.d/auto-patch
+    state: absent

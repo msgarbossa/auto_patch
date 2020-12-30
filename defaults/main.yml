@@ -1,0 +1,12 @@
+---
+state: enable
+validation: enable
+script_dir: "/etc/auto-patch"
+auto_reboot: enable
+cron_min_min: 1
+cron_min_max: 59
+cron_hr_min: 3
+cron_hr_max: 5
+cron_day_of_month: "*"
+cron_month: "*"
+cron_day_of_week: "6-7"
