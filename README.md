@@ -15,28 +15,30 @@ Sets up cron-based OS auto-patching for Debian-based or RPM-based Linux distribu
 
 | Variable         | Choices/Defaults | Purpose/Description                                                                                  |
 | ---------------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
-| state</br>*string* | **enable**, disable, absent | enable sets up all files and cron entry, disable removes the cron entry, absent removes all associated files |
-| script_dir</br>*string* | **/etc/auto-patch** | directory for auto-patch scripts |
-| validation</br>*string*| **enable**, disable, absent | enable sets up systemd service, disable removes the service, absent removes all validation-related files |
-| auto_reboot</br>*string* | **enable**, disable | automatically reboot after updates are applied if /var/run/reboot-required exists (creates \<script_dir\>/post_update.d/99-reboot.sh) |
-| cron_min_min</br>*integer* | **1** | minimum minute for randomly generated cron minute |
-| cron_min_max</br>*integer* | **59** | maximum minute for randomly generated cron minute |
-| cron_hr_min</br>*integer* | **3** | minimum hour for randomly generated cron hour |
-| cron_hr_max</br>*integer* | **5** | maximum hour for randomly generated cron hour |
-| cron_day_of_month</br>*string* | **\*** | day of month field in cron entry|
-| cron_month</br>*string* | **\*** | month field in cron entry |
-| cron_day_of_week</br>*string* | **6-7** | day of week field in cron entry (0-7 where 0 and 7 = Sunday) |
+| state</br> *string* | **enable**, disable, absent | enable sets up all files and cron entry, disable removes the cron entry, absent removes all associated files |
+| script_dir</br> *string* | **/etc/auto-patch** | directory for auto-patch scripts |
+| validation</br> *string*| **enable**, disable, absent | enable sets up systemd service, disable removes the service, absent removes all validation-related files |
+| auto_reboot</br> *string* | **enable**, disable | automatically reboot after updates are applied if /var/run/reboot-required exists (creates \<script_dir\>/post_update.d/99-reboot.sh) |
+| cron_min_min</br> *integer* | **1** | minimum minute for randomly generated cron minute |
+| cron_min_max</br> *integer* | **59** | maximum minute for randomly generated cron minute |
+| cron_hr_min</br> *integer* | **3** | minimum hour for randomly generated cron hour |
+| cron_hr_max</br> *integer* | **5** | maximum hour for randomly generated cron hour |
+| cron_day_of_month</br> *string* | **\*** | day of month field in cron entry|
+| cron_month</br> *string* | **\*** | month field in cron entry |
+| cron_day_of_week</br> *string* | **6-7** | day of week field in cron entry (0-7 where 0 and 7 = Sunday) |
 
 ## Role Dependencies
 
 - none
 
-## Directory Structure
+## How it Works
 
 - auto-patch scripts are setup in /etc/auto-patch
+- The cron job at /etc/cron.d/auto-patch runs /etc/auto-patch/auto-patch.sh
 - \*.d directories handle events and run executable scripts in alphabetical order
-- /etc/cron.d/auto-patch controls the schedule for running pre_update.sh, apply updates, and post_update.sh
+- auto-patch.sh runs pre_update.sh (pre_update.d), applies updates, and runs post_update.sh (post_update.d)
 - The pre_update.d directory contains scripts to cleanup logs and save command output to /var/log/auto-patch/\<datetime_stamp\>
+- On RPM-based Linux distributions, the /etc/auto-patch/post_update.d/10-reboot-required-detection.sh script, which creates /var/run/reboot-required if the kernel changes
 - The post_update.d directory optionally contains the reboot script that checks for /var/run/reboot-required
 - /etc/systemd/verify-reboot.service unit file runs post_reboot.sh
 - The post_reboot.d directory contains the verification script, which reads previous command output from /var/log/auto-patch/\<datetime_stamp\>/cmds.json
@@ -146,7 +148,7 @@ root@host:/etc/auto-patch/post_reboot.d# cat /var/log/auto-patch/current/report.
     "exit": 0
 ```
 
-Test auto-patch process by running command in cron entry (can trigger reboot if reboot is required and enabled after patching)
+Test auto-patch process by running command in cron entry (can trigger reboot after patching if reboot is required and enabled)
 
 ```bash
 root@host:/root# /etc/auto-patch/auto-patch.sh
@@ -165,3 +167,6 @@ root@host:/root# /etc/auto-patch/auto-patch.sh
 
 MIT / BSD
 
+## Source
+
+https://github.com/msgarbossa/auto_patch
