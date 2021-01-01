@@ -6,6 +6,7 @@ Sets up cron-based OS auto-patching for Debian-based or RPM-based Linux distribu
 - Automatic reboots are enabled by default, which will trigger a reboot if /var/run/reboot-required exists (custom script used for RPM-based Linux distributions to detect kernel changes).
 - The auto_reboot role variable can be used to disable automatic reboots, which is useful in a Kubernetes cluster when using a tool such as kured for orchestrating zero downtime VM reboots (kured watches for /var/run/reboot-required to cordon, drain nodes, and perform rolling reboots of the cluster).
 - The verify script performs tests such as ensuring previously mounted filesystems are mounted and network interfaces and IPs have not changed.
+- The verify script can be disabled, which prevents it from running on system boot while still allowing the script to be run manually or from another tool
 
 ## Requirements
 
@@ -17,7 +18,7 @@ Sets up cron-based OS auto-patching for Debian-based or RPM-based Linux distribu
 | ---------------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
 | state</br> *string* | **enable**, disable, absent | enable sets up all files and cron entry, disable removes the cron entry, absent removes all associated files |
 | script_dir</br> *string* | **/etc/auto-patch** | directory for auto-patch scripts |
-| validation</br> *string*| **enable**, disable, absent | enable sets up systemd service, disable removes the service, absent removes all validation-related files |
+| validation</br> *string*| **enable**, disable | enable sets up systemd service, disable removes the systemd service |
 | auto_reboot</br> *string* | **enable**, disable | automatically reboot after updates are applied if /var/run/reboot-required exists (creates \<script_dir\>/post_update.d/99-reboot.sh) |
 | cron_min_min</br> *integer* | **1** | minimum minute for randomly generated cron minute |
 | cron_min_max</br> *integer* | **59** | maximum minute for randomly generated cron minute |
