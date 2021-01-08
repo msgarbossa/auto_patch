@@ -27,6 +27,7 @@ Sets up cron-based OS auto-patching for Debian-based or RPM-based Linux distribu
 | cron_day_of_month</br> *string* | **\*** | day of month field in cron entry|
 | cron_month</br> *string* | **\*** | month field in cron entry |
 | cron_day_of_week</br> *string* | **6-7** | day of week field in cron entry (0-7 where 0 and 7 = Sunday) |
+| overwrite_existing_cron</br> *string* | **no**, yes | Overwrite existing /etc/cron.d/auto-patch schedule |
 
 ## Role Dependencies
 
@@ -157,6 +158,7 @@ root@host:/root# /etc/auto-patch/auto-patch.sh
 
 ## Future Improvements
 
+- Uninstall script in /etc/auto-patch directory for easy cleanup
 - Validation script
   - check NTP sync
   - check systemd services started successfully (analyze chain)

@@ -9,4 +9,5 @@ cron_hr_min: 3
 cron_hr_max: 5
 cron_day_of_month: "*"
 cron_month: "*"
-cron_day_of_week: "6-7"
+cron_day_of_week: "6"
+overwrite_existing_cron: no
