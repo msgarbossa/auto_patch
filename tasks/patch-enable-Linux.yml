@@ -109,8 +109,8 @@
     mode: 0644
     force: "{{ overwrite_existing_cron | bool | default(no) }}"
   vars:
-    min: "{{ cron_min_max| random(start=cron_min_min, seed=inventory_hostname) }}"
-    hr: "{{ cron_hr_max | random(start=cron_hr_min, seed=inventory_hostname) }}"
+    min: "{{ cron_min_max | int | random(start=cron_min_min | int, seed=inventory_hostname) }}"
+    hr: "{{ cron_hr_max | int | random(start=cron_hr_min | int, seed=inventory_hostname) }}"
     day_of_month: "{{ cron_day_of_month }}"
     month: "{{ cron_month }}"
     day_of_week: "{{ cron_day_of_week }}"
