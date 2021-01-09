@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LOG="/var/log/auto-patch/verify-reboot.out"
+LOG="/var/log/auto-patch/current/verify-reboot.out"
 echo `date` > $LOG
 
 start() {
@@ -16,7 +16,7 @@ start() {
 
   # Find time of last patching in epoch seconds from patching log file
   patch_secs=0
-  patch_file="/var/log/auto-patch/auto-patch-update.latest"
+  patch_file="/var/log/auto-patch/current/auto-patch-update.out"
   if [ -e $patch_file ]; then
     patch_sec_current=$(stat -c "%Y" $patch_file)
     [ $patch_sec_current -gt $patch_secs ] && patch_secs=$patch_sec_current
@@ -50,9 +50,11 @@ start() {
   sleep_sec=$(awk -v min=30 -v max=60 'BEGIN{srand(); print int(min+rand()*(max-min+1))}')
   echo "Sleeping $sleep_sec, collect commands, comparing to pre-reboot state" | tee -a $LOG
   cd /tmp
-  CMD="/bin/sleep $sleep_sec && $BASEDIR/post_reboot.sh"
+  sleep $sleep_sec
+  CMD="${BASEDIR}/post_reboot.sh"
   echo $CMD | tee -a $LOG
-  /usr/bin/nohup sh -c "$CMD" </dev/null >>$LOG 2>&1 &
+  $CMD >>$LOG 2>&1
+  # /usr/bin/nohup sh -c "$CMD" </dev/null >>$LOG 2>&1 &
   RETVAL=0
 }
 

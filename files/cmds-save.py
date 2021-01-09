@@ -65,7 +65,7 @@ def collect_cmds():
     # save_cmd_to_dict("echo \$TZ")
     save_cmd_to_dict('uptime')
     save_cmd_to_dict('netstat -rn')
-    save_cmd_to_dict('ifconfig -a')
+    save_cmd_to_dict('/sbin/ifconfig -a', key='ifconfig -a')
     save_cmd_to_dict('cat /proc/swaps')
     save_cmd_to_dict('df -k', timeout=15)
     save_cmd_to_dict('mount')
