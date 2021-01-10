@@ -139,20 +139,20 @@
     group: root
     mode: 0644
 
-- name: copy reboot script when auto_reboot is enable
+- name: copy reboot script when auto_patch_reboot is enable
   copy:
     src: reboot.sh
     dest: "{{ script_dir }}/post_update.d/99-reboot.sh"
     owner: root
     group: root
     mode: 0755
-  when: auto_reboot == 'enable'
+  when: auto_patch_reboot == 'enable'
 
-- name: remove reboot script when auto_reboot is enable
+- name: remove reboot script when auto_patch_reboot is enable
   file:
     path: "{{ script_dir }}/post_update.d/99-reboot.sh"
     state: absent
-  when: auto_reboot == 'disable'
+  when: auto_patch_reboot == 'disable'
 
 - name: copy cmds-save.py
   copy:
@@ -203,4 +203,4 @@
     mode: 0755
 
 - name: include tasks for reboot validation
-  include_tasks: validation-{{ state }}-{{ ansible_system }}.yml
+  include_tasks: validation-{{ auto_patch_state }}-{{ ansible_system }}.yml

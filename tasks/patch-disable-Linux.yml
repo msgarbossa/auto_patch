@@ -6,4 +6,4 @@
     state: absent
 
 - name: include tasks for reboot validation
-  include_tasks: validation-{{ state }}-{{ ansible_system }}.yml
+  include_tasks: validation-{{ auto_patch_state }}-{{ ansible_system }}.yml

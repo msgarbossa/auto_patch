@@ -16,10 +16,10 @@ Sets up cron-based OS auto-patching for Debian-based or RPM-based Linux distribu
 
 | Variable         | Choices/Defaults | Purpose/Description                                                                                  |
 | ---------------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
-| state</br> *string* | **enable**, disable, absent | enable sets up all files and cron entry, disable removes the cron entry, absent removes all associated files |
+| auto_patch_state</br> *string* | **enable**, disable, absent | enable sets up all files and cron entry, disable removes the cron entry, absent removes all associated files |
 | script_dir</br> *string* | **/etc/auto-patch** | directory for auto-patch scripts |
 | validation</br> *string*| **enable**, disable | enable sets up systemd service, disable removes the systemd service |
-| auto_reboot</br> *string* | **enable**, disable | automatically reboot after updates are applied if /var/run/reboot-required exists (creates \<script_dir\>/post_update.d/99-reboot.sh) |
+| auto_patch_reboot</br> *string* | **enable**, disable | automatically reboot after updates are applied if /var/run/reboot-required exists (creates \<script_dir\>/post_update.d/99-reboot.sh) |
 | cron_min_min</br> *integer* | **1** | minimum minute for randomly generated cron minute |
 | cron_min_max</br> *integer* | **59** | maximum minute for randomly generated cron minute |
 | cron_hr_min</br> *integer* | **3** | minimum hour for randomly generated cron hour |
@@ -96,7 +96,7 @@ auto-patch w/ automatic reboots disabled and daily OS updates
     include_role:
       name: auto_patch
     vars:
-      auto_reboot: disable
+      auto_patch_reboot: disable
       cron_day_of_week: "*"
 
 ```
@@ -108,7 +108,7 @@ Disable and remove auto-patch
     include_role:
       name: auto_patch
     vars:
-      state: absent
+      auto_patch_state: absent
 ```
 
 ## Testing

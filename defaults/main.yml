@@ -1,8 +1,8 @@
 ---
-state: enable
-validation: enable
+auto_patch_state: enable
+auto_patch_reboot: enable
+auto_patch_validation: enable
 script_dir: "/etc/auto-patch"
-auto_reboot: enable
 cron_min_min: 1
 cron_min_max: 59
 cron_hr_min: 3
