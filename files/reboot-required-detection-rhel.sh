@@ -26,7 +26,7 @@ if [ -z "$BOOTTIME" ]; then
 fi
 
 # Get latest kernel install time
-LATEST_KERNEL_INSTALLTIME=$(rpm -q kernel --qf "%{INSTALLTIME}\n" | tail -1)
+LATEST_KERNEL_INSTALLTIME=$(rpm -q kernel --qf "%{INSTALLTIME}\n" | sort -n | tail -1)
 if [ -z "$LATEST_KERNEL_INSTALLTIME" ]; then
   echo "Error reading kernel INSTALLTIME" | tee -a $LOG
   exit 1
@@ -48,7 +48,7 @@ else
 fi
 
 # Get glibc install time
-GLIBC_INSTALLTIME=$(rpm -q glibc --qf "%{INSTALLTIME}\n")
+GLIBC_INSTALLTIME=$(rpm -q glibc --qf "%{INSTALLTIME}\n" | sort -n | tail -1)
 if [ -z "$GLIBC_INSTALLTIME" ]; then
   echo "Error reading glibc INSTALLTIME" | tee -a $LOG
   exit 1
