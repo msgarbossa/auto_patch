@@ -164,7 +164,7 @@ def validate_ifconfig():
                 interfaces_curr[interface].append(ip)
 
     # Compare previous and current
-    d = DictDiffer(interfaces_prev, interfaces_curr)
+    d = DictDiffer(interfaces_curr, interfaces_prev)
     if len(d.added()) > 0:
         results[cmd_key]['msgs'].append('added: ' + ', '.join(d.added()))
         results[cmd_key]['status'] = 'failed'
@@ -229,7 +229,7 @@ def validate_fs_mounts():
             mount_order.append(mp)  # capture mount order to check for overmounts
 
     # Compare previous and current
-    d = DictDiffer(mps_prev, mps_curr)
+    d = DictDiffer(mps_curr, mps_prev)
     if len(d.added()) > 0:
         results[cmd_key]['msgs'].append('added: ' + ', '.join(d.added()))
         results[cmd_key]['status'] = 'failed'
@@ -343,7 +343,7 @@ def validate_paging_space():
             swaps_curr[swap_info[0]] = swap_info[2]
 
     # Compare previous and current
-    d = DictDiffer(swaps_prev, swaps_curr)
+    d = DictDiffer(swaps_curr, swaps_prev)
     if len(d.added()) > 0:
         results[cmd_key]['msgs'].append('added: ' + ', '.join(d.added()))
         results[cmd_key]['status'] = 'failed'
