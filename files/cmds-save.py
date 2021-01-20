@@ -71,8 +71,8 @@ def collect_cmds():
     save_cmd_to_dict('mount')
     save_cmd_to_dict('cat /etc/resolv.conf')
     # save_cmd_to_dict('ntpq -pn')
-    if os.path.exists('/usr/bin/dpkg'):
-        save_cmd_to_dict('dpkg --list')
+    # if os.path.exists('/usr/bin/dpkg'):
+    #     save_cmd_to_dict('/usr/bin/dpkg --list')
     if os.path.exists('/usr/bin/rpm'):
         save_cmd_to_dict("rpm -qa --queryformat=\"%{NAME}:%{VERSION}\\n\"", key='rpm_custom')
     save_cmd_to_dict('netstat -an')
