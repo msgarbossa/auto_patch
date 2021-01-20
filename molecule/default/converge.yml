@@ -1,0 +1,21 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+
+  tasks:
+
+  - name: Include role
+    include_role:
+      name: auto_patch
+    vars:
+      auto_patch_reboot: disable
+
+  - name: Execute scripts normally run by cron
+    shell: |
+      /etc/auto-patch/pre_update.d/10-cmds-cleanup.sh
+      /etc/auto-patch/pre_update.d/10-cmds-save.py
+      /etc/auto-patch/post_reboot.d/10-verify.py
+    args:
+      executable: /bin/bash
+    changed_when: false

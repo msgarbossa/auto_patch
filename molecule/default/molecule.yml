@@ -1,0 +1,41 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+scenario:
+  test_sequence:
+    - lint
+    - destroy
+    # - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    # - idempotence
+    # - side_effect
+    - verify
+    - destroy
+platforms:
+  - name: centos-8
+    image: docker.io/pycontribs/centos:8
+    pre_build_image: true
+  - name: ubuntu-18.04
+    image: docker.io/pycontribs/ubuntu
+    pre_build_image: true
+provisioner:
+  name: ansible
+  # options:
+  #   vvv: True
+  log: true
+verifier:
+  name: testinfra
+  env:
+    PYTHONDONTWRITEBYTECODE: '1'  # prevents writing __pycache__ file
+    PY_COLORS: '1'
+    ANSIBLE_FORCE_COLOR: '1'
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8 --ignore=E501

@@ -1,0 +1,21 @@
+---
+- name: prepare
+  hosts: all
+  gather_facts: false
+
+  tasks:
+
+  - name: Setup test environment
+    shell: |
+      which yum
+      if [[ $? -eq 0 ]]; then
+         yum install -y python3
+      fi
+      which apt-get
+      if [[ $? -eq 0 ]]; then
+         apt-get update
+         apt-get install -y python3
+      fi
+    args:
+      executable: /bin/bash
+    changed_when: false
