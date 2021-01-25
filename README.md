@@ -26,7 +26,7 @@ Sets up cron-based OS auto-patching for Debian-based or RPM-based Linux distribu
 | cron_hr_max</br> *integer* | **5** | maximum hour for randomly generated cron hour |
 | cron_day_of_month</br> *string* | **\*** | day of month field in cron entry|
 | cron_month</br> *string* | **\*** | month field in cron entry |
-| cron_day_of_week</br> *string* | **6-7** | day of week field in cron entry (0-7 where 0 and 7 = Sunday) |
+| cron_day_of_week</br> *string* | **6** | day of week field in cron entry (0-7 where 0 and 7 = Sunday) |
 | overwrite_existing_cron</br> *string* | **no**, yes | Overwrite existing /etc/cron.d/auto-patch schedule |
 
 ## Role Dependencies
