@@ -12,9 +12,9 @@
 # ansible_system = Linux, Windows
 
 - name: include OS-specific var files
-  include_vars: "{{ lookup('first_found', params) }}"
+  include_vars: "{{ lookup('first_found', params_auto_patch_var_files) }}"
   vars:
-    params:
+    params_auto_patch_var_files:
       files:
         - '{{ ansible_distribution }}.yml'
         - '{{ ansible_os_family }}.yml'
