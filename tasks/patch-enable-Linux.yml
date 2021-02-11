@@ -126,18 +126,23 @@
     recurse: yes
     mode: 0755
 
-- name: logrotate for /var/log/auto-patch/auto-patch-update.<date>
-  copy:
-    content: |
-      # logrotate file managed by Ansible (role=auto-patch/tasks/patch-enable-Linux)
-      /var/log/auto-patch/auto-patch-update.* {
-        daily
-        rotate 14
-      }
-    dest: /etc/logrotate.d/auto-patch
-    owner: root
-    group: root
-    mode: 0644
+# - name: logrotate for /var/log/auto-patch/auto-patch-update.<date>
+#   copy:
+#     content: |
+#       # logrotate file managed by Ansible (role=auto-patch/tasks/patch-enable-Linux)
+#       /var/log/auto-patch/auto-patch-update.* {
+#         daily
+#         rotate 14
+#       }
+#     dest: /etc/logrotate.d/auto-patch
+#     owner: root
+#     group: root
+#     mode: 0644
+
+- name: remove old logrotate file
+  file:
+    path: /etc/logrotate.d/auto-patch
+    state: absent
 
 - name: copy reboot script when auto_patch_reboot is enable
   copy:

@@ -9,3 +9,6 @@ for cmds_dir in `ls -d /var/log/auto-patch/20[2-9][0-9]-[0-1][1-2]-[0-3][0-9]_* 
     echo "removed ${cmds_dir}"
   fi
 done
+
+find /var/log/auto-patch -name 'auto-patch-update.*' -type f -mtime +60 -exec rm -f {} \;
+
