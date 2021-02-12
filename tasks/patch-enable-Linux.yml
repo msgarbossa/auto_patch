@@ -10,7 +10,14 @@
     mode: 0644
   when: ansible_os_family == "RedHat"
 
-- name: Make sure script directory exists
+- name: Checking if script directory exists
+  stat:
+    path: "{{ script_dir }}"
+  register: stat_script_dir
+  ignore_errors: yes
+  changed_when: False
+
+- name: Recusively create script directory if needed
   file:
     path: "{{ script_dir }}"
     state: directory
@@ -18,6 +25,7 @@
     group: root
     recurse: yes
     mode: 0755
+  when: not stat_script_dir.stat.exists
 
 - name: copy OS-specific auto-patch.sh script
   copy:
@@ -116,6 +124,13 @@
     day_of_week: "{{ cron_day_of_week }}"
     script: "{{ script_dir }}/auto-patch.sh"
 
+- name: Checking if log directory exists
+  stat:
+    path: /var/log/auto-patch
+  register: stat_log_dir
+  ignore_errors: yes
+  changed_when: False
+
 # auto-patch.sh writes log files to /var/log/auto-patch/auto-patch-update.<date>
 - name: /var/log/auto-patch directory
   file:
@@ -125,24 +140,7 @@
     group: root
     recurse: yes
     mode: 0755
-
-# - name: logrotate for /var/log/auto-patch/auto-patch-update.<date>
-#   copy:
-#     content: |
-#       # logrotate file managed by Ansible (role=auto-patch/tasks/patch-enable-Linux)
-#       /var/log/auto-patch/auto-patch-update.* {
-#         daily
-#         rotate 14
-#       }
-#     dest: /etc/logrotate.d/auto-patch
-#     owner: root
-#     group: root
-#     mode: 0644
-
-- name: remove old logrotate file
-  file:
-    path: /etc/logrotate.d/auto-patch
-    state: absent
+  when: not stat_log_dir.stat.exists
 
 - name: copy reboot script when auto_patch_reboot is enable
   copy:
