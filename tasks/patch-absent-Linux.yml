@@ -32,7 +32,3 @@
     path: /var/log/auto-patch
     state: absent
 
-- name: Remove /etc/logrotate.d/auto-patch
-  file:
-    path: /etc/logrotate.d/auto-patch
-    state: absent
