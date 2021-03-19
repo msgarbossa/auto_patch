@@ -28,6 +28,7 @@ start() {
   if [ -e $report_file ]; then
     verify_secs=$(stat -c "%Y" $report_file)
   else
+    echo "verification has not run yet ($report_file not found). Setting do_verify=1" | tee -a $LOG
     do_verify=1
   fi
 
@@ -36,6 +37,7 @@ start() {
 
   if [ $do_verify != 1 ]; then
     echo "Verification has already been done since last patching.  Verification will not continue." | tee -a $LOG
+    echo "verify_secs=$verify_secs <= patch_secs=$patch_secs" | tee -a $LOG
     RETVAL=0; return 0
   fi
 
