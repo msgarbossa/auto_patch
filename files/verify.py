@@ -76,8 +76,8 @@ def collect_cmds():
     save_cmd_to_dict('mount')
     save_cmd_to_dict('cat /etc/resolv.conf')
     # save_cmd_to_dict('ntpq -pn')
-    # if os.path.exists('/usr/bin/dpkg'):
-    #     save_cmd_to_dict('dpkg --list')
+    if os.path.exists('/usr/bin/dpkg'):
+        save_cmd_to_dict('dpkg --list')
     if os.path.exists('/usr/bin/rpm'):
         save_cmd_to_dict("rpm -qa --queryformat=\"%{NAME}:%{VERSION}\\n\"", key='rpm_custom')
     save_cmd_to_dict('netstat -an')
@@ -264,16 +264,16 @@ def validate_packages():
     results = {}
 
     # Check dpkg (if exists)
-    # cmd_key = 'dpkg --list'
-    # if cmd_key in cmds_dict_curr:
-    #     results[cmd_key] = {}
-    #     results[cmd_key]['status'] = 'success'
-    #     results[cmd_key]['msgs'] = []
+    cmd_key = 'dpkg --list'
+    if cmd_key in cmds_dict_curr:
+        results[cmd_key] = {}
+        results[cmd_key]['status'] = 'success'
+        results[cmd_key]['msgs'] = []
 
-    #     # Parse current info
-    #     if len(cmds_dict_curr[cmd_key]['stderr']) > 0:
-    #         results[cmd_key]['msgs'].append('stderr was returned')
-    #         results[cmd_key]['status'] = 'failed'
+        # Parse current info
+        if len(cmds_dict_curr[cmd_key]['stderr']) > 0:
+            results[cmd_key]['msgs'].append('stderr was returned')
+            results[cmd_key]['status'] = 'failed'
 
     # Check rpm (if exists)
     cmd_key = 'rpm_custom'
@@ -344,9 +344,9 @@ def validate_paging_space():
 
     # Compare previous and current
     d = DictDiffer(swaps_curr, swaps_prev)
-    if len(d.added()) > 0:
-        results[cmd_key]['msgs'].append('added: ' + ', '.join(d.added()))
-        results[cmd_key]['status'] = 'failed'
+    # if len(d.added()) > 0:
+    #     results[cmd_key]['msgs'].append('added: ' + ', '.join(d.added()))
+    #     results[cmd_key]['status'] = 'failed'
 
     if len(d.removed()) > 0:
         results[cmd_key]['msgs'].append('removed: ' + ', '.join(d.removed()))
