@@ -12,7 +12,7 @@ scenario:
     - create
     - prepare
     - converge
-    - idempotence
+    # - idempotence
     # - side_effect
     - verify
     - destroy
@@ -25,9 +25,12 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
+  # log: True  # logging for molecule scenarios
   # options:
-  #   vvv: True
-  log: true
+  #   vvv: True  # logging for playbooks run as part of molecule scenarios
+  env:
+    PY_COLORS: '1'
+    ANSIBLE_FORCE_COLOR: '1'
 verifier:
   name: testinfra
   env:
