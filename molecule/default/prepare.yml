@@ -14,7 +14,7 @@
       which apt-get
       if [[ $? -eq 0 ]]; then
          apt-get update
-         apt-get install -y python3
+         apt-get install -y python3 net-tools
       fi
     args:
       executable: /bin/bash
