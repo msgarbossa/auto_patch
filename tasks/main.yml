@@ -11,16 +11,25 @@
 # ansible_os_family = RedHat, Debian
 # ansible_system = Linux, Windows
 
-- name: include OS-specific var files
-  include_vars: "{{ lookup('first_found', params_auto_patch_var_files) }}"
+- name: include OS-specific var files for auto-patch setup
+  include_vars: "{{ lookup('first_found', params_auto_patch_setup_var_files) }}"
   vars:
-    params_auto_patch_var_files:
+    params_auto_patch_setup_var_files:
       files:
         - '{{ ansible_distribution }}.yml'
         - '{{ ansible_os_family }}.yml'
         - '{{ ansible_system }}.yml'
       paths:
         - vars
+
+- name: quick-setup if already installed
+  block:
+    - name: Check if auto-patch.sh exists
+      stat:
+        path: "{{ script_dir }}/auto-patch.sh"
+      register: stat_auto_patch_sh
+      ignore_errors: yes
+  when: auto_patch_quick_setup and auto_patch_state == 'enable'
 
 - name: include OS-specific tasks for auto-patch setup
   include_tasks: "{{ lookup('first_found', params) }}"
@@ -30,3 +39,4 @@
         - 'patch-{{ auto_patch_state }}-{{ ansible_distribution }}.yml'
         - 'patch-{{ auto_patch_state }}-{{ ansible_os_family }}.yml'
         - 'patch-{{ auto_patch_state }}-{{ ansible_system }}.yml'
+  when: not auto_patch_quick_setup or not stat_auto_patch_sh.stat.exists | default(false, false)
