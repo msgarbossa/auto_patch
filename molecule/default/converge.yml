@@ -10,6 +10,7 @@
       name: auto_patch
     vars:
       auto_patch_reboot: disable
+      auto_patch_quick_setup: true
 
   - name: Execute scripts normally run by cron
     shell: |
