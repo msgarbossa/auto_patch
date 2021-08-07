@@ -2,6 +2,7 @@
 auto_patch_state: enable
 auto_patch_reboot: enable
 auto_patch_validation: enable
+auto_patch_quick_setup: false
 script_dir: "/etc/auto-patch"
 cron_min_min: 1
 cron_min_max: 59
