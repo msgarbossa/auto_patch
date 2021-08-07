@@ -31,4 +31,3 @@
   file:
     path: /var/log/auto-patch
     state: absent
-
