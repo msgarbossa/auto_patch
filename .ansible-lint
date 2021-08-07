@@ -1,3 +1,4 @@
 skip_list:
   - '204' # Lines should be no longer than 160 chars
-  - '303' # Using command rather than module
+  - 'role-name' # Role name does not match ``^[a-z][a-z0-9_]+$`` pattern
+  - 'command-instead-of-module' # Using command rather than module
