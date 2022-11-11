@@ -26,8 +26,8 @@ fi
 
 if [[ -e /usr/bin/flatpak ]]; then
   echo "" >> /var/log/auto-patch-update.out
-  echo "flatpak update:" >> /var/log/auto-patch-update.out
-  flatpak update >>/var/log/auto-patch-update.out 2>&1
+  echo "flatpak update -y:" >> /var/log/auto-patch-update.out
+  flatpak update -y >>/var/log/auto-patch-update.out 2>&1
 fi
 
 
