@@ -16,18 +16,19 @@ echo "auto-patch:" >/var/log/auto-patch/auto-patch-update.${DATE_STAMP} 2>&1
 ln -sf /var/log/auto-patch/auto-patch-update.${DATE_STAMP} /var/log/auto-patch/auto-patch-update.latest
 
 /usr/bin/apt-get update
-/usr/bin/apt-get -q=2 upgrade >>/var/log/auto-patch/auto-patch-update.${DATE_STAMP} 2>&1
+/usr/bin/apt-get -q=2 upgrade | tee -a /var/log/auto-patch/auto-patch-update.${DATE_STAMP} 2>&1
+/usr/bin/apt autoremove -y | tee -a /var/log/auto-patch/auto-patch-update.${DATE_STAMP} 2>&1
 
 if [[ -e /usr/bin/snap ]]; then
-  echo "" >> /var/log/auto-patch-update.out
-  echo "snap refresh:" >> /var/log/auto-patch-update.out
-  snap refresh >>/var/log/auto-patch-update.out 2>&1
+  echo "" | tee -a /var/log/auto-patch-update.out 2>&1
+  echo "snap refresh:" | tee -a /var/log/auto-patch-update.out 2>&1
+  snap refresh | tee -a /var/log/auto-patch-update.out 2>&1
 fi
 
 if [[ -e /usr/bin/flatpak ]]; then
-  echo "" >> /var/log/auto-patch-update.out
-  echo "flatpak update -y:" >> /var/log/auto-patch-update.out
-  flatpak update -y >>/var/log/auto-patch-update.out 2>&1
+  echo "" | tee -a /var/log/auto-patch-update.out 2>&1
+  echo "flatpak update -y:" | tee -a /var/log/auto-patch-update.out 2>&1
+  flatpak update -y | tee -a /var/log/auto-patch-update.out 2>&1
 fi
 
 
